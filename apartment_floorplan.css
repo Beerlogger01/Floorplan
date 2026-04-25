@@ -1,0 +1,239 @@
+/* Apartment floorplan for ha-floorplan
+   Path in Home Assistant: /config/www/floorplan/apartment_floorplan.css
+   Browser path: /local/floorplan/apartment_floorplan.css
+*/
+
+#background {
+  fill: #0e1219;
+}
+
+#label_home {
+  fill: #eaf0ff;
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+#label_hint {
+  fill: #8f9bb3;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+#apartment_shadow {
+  fill: #121821;
+}
+
+.room {
+  stroke: #263244;
+  stroke-width: 4;
+  cursor: pointer;
+  transition: opacity 180ms ease, fill 180ms ease, stroke 180ms ease;
+}
+
+#room_bathroom {
+  fill: #273647;
+}
+
+#room_kitchen {
+  fill: #24453c;
+}
+
+#room_corridor_entry {
+  fill: #33384c;
+}
+
+#room_living {
+  fill: #3f354f;
+}
+
+#room_bedroom {
+  fill: #2d3d5b;
+}
+
+.room:hover {
+  opacity: 0.92;
+  stroke: #d9e4ff;
+  stroke-width: 5;
+}
+
+.room-static {
+  cursor: default;
+}
+
+#outer_wall {
+  fill: none;
+  stroke: url(#wall-gradient);
+  stroke-width: 18;
+  pointer-events: none;
+}
+
+#walls line {
+  stroke: #151b24;
+  stroke-width: 16;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.door {
+  stroke: #ffd65a;
+  stroke-width: 10;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 7px rgba(255, 214, 90, 0.55));
+  pointer-events: none;
+}
+
+.window {
+  stroke: #84d9ff;
+  stroke-width: 7;
+  stroke-linecap: round;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 5px rgba(132, 217, 255, 0.45));
+  pointer-events: none;
+}
+
+.room-label {
+  fill: #f3f6ff;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.32);
+  stroke-width: 4px;
+  pointer-events: none;
+}
+
+.room-sub-label {
+  fill: #c7d0e3;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.hotspot {
+  cursor: pointer;
+}
+
+.entity-icon {
+  fill: #151b24;
+  stroke: #eaf0ff;
+  stroke-width: 3;
+  filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.36));
+  transition: transform 160ms ease, fill 160ms ease, stroke 160ms ease, opacity 160ms ease;
+}
+
+.hotspot:hover .entity-icon,
+.entity-icon:hover {
+  fill: #202a3a;
+  stroke: #ffffff;
+}
+
+.hotspot-icon {
+  fill: #ffffff;
+  font-size: 22px;
+  text-anchor: middle;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+}
+
+.hotspot-icon.small {
+  font-size: 18px;
+}
+
+.hotspot-icon.tiny {
+  font-size: 16px;
+}
+
+.sensor-text {
+  fill: #e7edf9;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+.glow {
+  fill: url(#active-glow);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+/* State classes added by ha-floorplan.
+   Floorplan usually adds state classes to the SVG element bound to entity.
+   These cover common states and make icons useful even before custom JS.
+*/
+.on {
+  fill: #ffd76a !important;
+  stroke: #fff4bf !important;
+}
+
+.off {
+  opacity: 0.72;
+}
+
+.unavailable,
+.unknown {
+  opacity: 0.35;
+}
+
+.cleaning,
+.docked,
+.returning,
+.paused {
+  stroke-width: 4 !important;
+}
+
+.cleaning {
+  fill: #71e3a4 !important;
+  stroke: #c2ffd9 !important;
+}
+
+.returning {
+  fill: #9bc4ff !important;
+  stroke: #deebff !important;
+}
+
+.docked {
+  fill: #7f8da3 !important;
+}
+
+.paused {
+  fill: #ffc36a !important;
+}
+
+/* Motion sensor states */
+#binary_sensor\.datchik_dvizheniia_motion.on,
+#binary_sensor\.datchik_dvizheniia_motion.motion,
+.motion {
+  fill: #ff7b7b !important;
+  stroke: #ffd2d2 !important;
+}
+
+/* Optional room glow classes.
+   If you later bind these glow elements to light states, they will light up.
+*/
+#glow_kitchen.on,
+#glow_bedroom.on,
+#glow_corridor.on,
+#glow_living.on {
+  opacity: 1;
+}
+
+/* Mobile friendliness */
+@media (max-width: 700px) {
+  .room-label {
+    font-size: 26px;
+  }
+
+  .sensor-text {
+    font-size: 14px;
+  }
+}

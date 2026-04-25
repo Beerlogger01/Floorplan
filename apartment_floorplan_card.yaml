@@ -1,0 +1,165 @@
+type: custom:floorplan-card
+title: Квартира
+config:
+  image: /local/floorplan/apartment_floorplan.svg
+  stylesheet: /local/floorplan/apartment_floorplan.css
+  console_log_level: error
+
+  defaults:
+    hover_action: hover-info
+    tap_action: more-info
+
+  rules:
+    # --- Rooms: tap room -> toggle main light ---
+    - element: room_kitchen
+      entity: light.lampochki_na_kukhne
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.lampochki_na_kukhne
+
+    - element: room_bedroom
+      entity: light.smart_ceiling_light
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.smart_ceiling_light
+
+    - element: room_corridor_entry
+      entity: light.hall_strip
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.hall_strip
+
+    - element: room_living
+      entity: light.audiosistema_outlet
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.audiosistema_outlet
+
+    - element: room_bathroom
+      entity: vacuum.roborock_qrevo_curv_series
+      tap_action:
+        action: more-info
+
+    # --- Kitchen entities ---
+    - element: light.lampochki_na_kukhne
+      entity: light.lampochki_na_kukhne
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.lampochki_na_kukhne
+
+    - element: switch.w601_switch_1
+      entity: switch.w601_switch_1
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: switch.w601_switch_1
+
+    - element: switch.teapot_start
+      entity: switch.teapot_start
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: switch.teapot_start
+
+    - element: sensor.teapot_current_temperature
+      entity: sensor.teapot_current_temperature
+      tap_action:
+        action: more-info
+
+    # --- Corridor + entry ---
+    - element: light.hall_strip
+      entity: light.hall_strip
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.hall_strip
+
+    - element: binary_sensor.datchik_dvizheniia_motion
+      entity: binary_sensor.datchik_dvizheniia_motion
+      tap_action:
+        action: more-info
+
+    - element: sensor.luminance_sensor_illuminance
+      entity: sensor.luminance_sensor_illuminance
+      tap_action:
+        action: more-info
+
+    - element: camera.intellektualnyi_dvernoi_zvonok
+      entity: camera.intellektualnyi_dvernoi_zvonok
+      tap_action:
+        action: more-info
+
+    # --- Living room ---
+    - element: media_player.tv
+      entity: media_player.tv
+      tap_action:
+        action: more-info
+
+    - element: light.audiosistema_outlet
+      entity: light.audiosistema_outlet
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.audiosistema_outlet
+
+    # --- Bedroom ---
+    - element: light.smart_ceiling_light
+      entity: light.smart_ceiling_light
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.smart_ceiling_light
+
+    - element: switch.kleine_lampe_switch_1
+      entity: switch.kleine_lampe_switch_1
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: switch.kleine_lampe_switch_1
+
+    - element: sensor.datchik_temperatury_temperature
+      entity: sensor.datchik_temperatury_temperature
+      tap_action:
+        action: more-info
+
+    - element: sensor.datchik_temperatury_humidity
+      entity: sensor.datchik_temperatury_humidity
+      tap_action:
+        action: more-info
+
+    - element: event.knob_scene_button_button_1
+      entity: event.knob_scene_button_button_1
+      tap_action:
+        action: more-info
+
+    # --- Roborock ---
+    - element: vacuum.roborock_qrevo_curv_series
+      entity: vacuum.roborock_qrevo_curv_series
+      tap_action:
+        action: more-info
+      hold_action:
+        action: call-service
+        service: vacuum.start
+        service_data:
+          entity_id: vacuum.roborock_qrevo_curv_series
+
+    - element: sensor.roborock_qrevo_curv_series_status
+      entity: sensor.roborock_qrevo_curv_series_status
+      tap_action:
+        action: more-info
