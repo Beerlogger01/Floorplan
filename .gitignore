@@ -1,0 +1,20 @@
+# General OS artifacts
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.bak
+*.tmp
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+
+# Python cache
+__pycache__/
+
+# Home Assistant secrets (never commit these)
+.env
+secrets.yaml
