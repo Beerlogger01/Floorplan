@@ -1,0 +1,53 @@
+# Lovelace Manual Card configuration for ha-floorplan
+#
+# Instructions:
+#   1. In Home Assistant, go to your dashboard.
+#   2. Edit the dashboard → Add Card → Manual.
+#   3. Paste the YAML below (starting from "type:").
+#   4. Save and reload the dashboard.
+#
+# Prerequisites:
+#   - ha-floorplan installed via HACS → Frontend
+#   - Resource added: /hacsfiles/ha-floorplan/floorplan.js (type: module)
+#   - SVG and CSS files copied to /config/www/floorplan/
+
+type: custom:floorplan-card
+config:
+  image: /local/floorplan/apartment_floorplan.svg
+  stylesheet: /local/floorplan/apartment_floorplan.css
+  rules:
+    # Example: Kitchen light
+    - entity: light.kitchen
+      element: room-kitchen
+      state_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.kitchen
+      class_template: |
+        if (entity.state === 'on') return 'light-on';
+        return '';
+
+    # Example: Bedroom light
+    - entity: light.bedroom
+      element: room-bedroom
+      state_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.bedroom
+      class_template: |
+        if (entity.state === 'on') return 'light-on';
+        return '';
+
+    # Example: Living room light
+    - entity: light.living_room
+      element: room-living-room
+      state_action:
+        action: call-service
+        service: homeassistant.toggle
+        service_data:
+          entity_id: light.living_room
+      class_template: |
+        if (entity.state === 'on') return 'light-on';
+        return '';
