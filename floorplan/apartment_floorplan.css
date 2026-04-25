@@ -1,45 +1,200 @@
 /* =============================================================
    apartment_floorplan.css
-   Visual styling for the Home Assistant floorplan SVG.
+   Modern smart home aesthetic for Home Assistant floorplan
+
+   Design principles:
+   - Dark theme for dashboard comfort
+   - Soft shadows and rounded shapes
+   - Calm, human-friendly colors
+   - Not a CAD/technical schematic
+
    Hosted at: /config/www/floorplan/apartment_floorplan.css
    Browser URL: /local/floorplan/apartment_floorplan.css
    ============================================================= */
 
 /* --- Global SVG defaults --- */
 #floorplan {
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #0f1419;
 }
 
-/* --- Room floors --- */
+/* --- Background --- */
+#background {
+  fill: #0f1419;
+  transition: fill 0.3s ease;
+}
+
+/* --- Room floors (base state: lights OFF) --- */
 #kitchen-floor,
 #bathroom-floor,
 #bedroom-floor,
-#living-room-floor {
-  fill: #dde8f0;
-  stroke: #aac0d0;
-  stroke-width: 2;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
-  transition: fill 0.4s ease;
+#living-room-floor,
+#corridor-floor {
+  fill: #1a1f27;
+  stroke: #2a3142;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  transition: fill 0.3s ease, filter 0.3s ease;
 }
 
 /* --- Room labels --- */
 #kitchen-label,
 #bathroom-label,
 #bedroom-label,
-#living-room-label {
-  font-size: 18px;
+#living-room-label,
+#corridor-label,
+#robot-status {
+  font-size: 14px;
   font-weight: 600;
-  fill: #3a3a50;
+  fill: #c0c7d4;
   pointer-events: none;
+  text-anchor: middle;
+  transition: fill 0.3s ease;
 }
 
-/* --- Light ON state (applied via ha-floorplan class binding) --- */
-.light-on #kitchen-floor    { fill: #fff5c0; }
-.light-on #bathroom-floor   { fill: #fff5c0; }
-.light-on #bedroom-floor    { fill: #fff5c0; }
-.light-on #living-room-floor { fill: #fff5c0; }
+/* --- Entry / Corridor specific --- */
+#corridor-floor {
+  fill: #1a1f27;
+}
 
-/* --- Glow layer (brightness-aware, applied via ha-floorplan) --- */
-.glow-low  { opacity: 0.3; }
-.glow-mid  { opacity: 0.6; }
-.glow-high { opacity: 1.0; }
+#entrance-marker {
+  stroke: #2a3142;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   DYNAMIC ROOM LIGHTING OVERLAYS
+
+   These layers sit on top of room floors and provide
+   visual feedback when lights are on.
+
+   Future support:
+   - RGB color blending
+   - Color temperature (warm/cool)
+   - Brightness-based opacity
+   ============================================================ */
+
+.room-light-overlay {
+  fill: #ffd700;
+  opacity: 0;
+  transition: opacity 0.4s ease, fill 0.4s ease;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Light is ON - show overlay with warm glow */
+.light-on .room-light-overlay,
+.room-light-overlay.is-on {
+  opacity: 0.25;
+}
+
+/* Light is OFF - hide overlay */
+.light-off .room-light-overlay,
+.room-light-overlay.is-off {
+  opacity: 0;
+}
+
+/* Brightness levels affect overlay opacity */
+.room-light-overlay.brightness-low {
+  opacity: 0.1;
+}
+
+.room-light-overlay.brightness-medium {
+  opacity: 0.2;
+}
+
+.room-light-overlay.brightness-high {
+  opacity: 0.3;
+}
+
+/* Future: Color temperature support */
+/* .room-light-overlay.color-warm { fill: #ffa060; } */
+/* .room-light-overlay.color-cool { fill: #a0d8ff; } */
+/* .room-light-overlay.color-rgb { filter: url(#colorMatrix); } */
+
+/* ============================================================
+   ROBOROCK VACUUM INDICATOR
+
+   Visual feedback for robot position / status
+   ============================================================ */
+
+.robot-indicator {
+  fill: #4a9eff;
+  stroke: #2a7fff;
+  stroke-width: 2;
+  filter: drop-shadow(0 2px 8px rgba(42, 127, 255, 0.3));
+  animation: robot-pulse 2s ease-in-out infinite;
+}
+
+@keyframes robot-pulse {
+  0%, 100% {
+    r: 20;
+    opacity: 0.6;
+  }
+  50% {
+    r: 24;
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   INTERACTIVE STATES
+
+   Hover, active, and disabled states for user interaction
+   ============================================================ */
+
+/* Rooms are clickable */
+#room-kitchen,
+#room-bathroom,
+#room-bedroom,
+#room-living-room,
+#room-corridor {
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+/* Hover state - slight brightness increase */
+#room-kitchen:hover #kitchen-floor,
+#room-bathroom:hover #bathroom-floor,
+#room-bedroom:hover #bedroom-floor,
+#room-living-room:hover #living-room-floor,
+#room-corridor:hover #corridor-floor {
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6)) brightness(1.1);
+}
+
+/* ============================================================
+   RESPONSIVE & FULLSCREEN CONSIDERATIONS
+   ============================================================ */
+
+@media (min-width: 1200px) {
+  /* On larger screens, rooms can be slightly larger */
+  #kitchen-label,
+  #bathroom-label,
+  #bedroom-label,
+  #living-room-label,
+  #corridor-label {
+    font-size: 16px;
+  }
+}
+
+/* Mobile: keep text readable */
+@media (max-width: 600px) {
+  #floorplan {
+    /* SVG will scale responsively */
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+text {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Ensure good contrast for dark theme */
+#legend {
+  fill: #888888;
+  font-size: 10px;
+}

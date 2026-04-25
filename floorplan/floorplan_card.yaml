@@ -10,44 +10,138 @@
 #   - ha-floorplan installed via HACS → Frontend
 #   - Resource added: /hacsfiles/ha-floorplan/floorplan.js (type: module)
 #   - SVG and CSS files copied to /config/www/floorplan/
+#
+# Home Assistant paths:
+#   - SVG:        /config/www/floorplan/apartment_floorplan.svg
+#   - CSS:        /config/www/floorplan/apartment_floorplan.css
+#   - Browser:    /local/floorplan/apartment_floorplan.svg
+#   - Browser:    /local/floorplan/apartment_floorplan.css
 
 type: custom:floorplan-card
 config:
   image: /local/floorplan/apartment_floorplan.svg
   stylesheet: /local/floorplan/apartment_floorplan.css
   rules:
-    # Example: Kitchen light
-    - entity: light.kitchen
+    # ============================================================
+    # KITCHEN
+    # ============================================================
+    - entity: light.lampochki_na_kukhne
       element: room-kitchen
-      state_action:
+      tap_action:
         action: call-service
-        service: homeassistant.toggle
+        service: light.toggle
         service_data:
-          entity_id: light.kitchen
+          entity_id: light.lampochki_na_kukhne
       class_template: |
         if (entity.state === 'on') return 'light-on';
-        return '';
+        return 'light-off';
+      # Dynamic light overlay
+    - entity: light.lampochki_na_kukhne
+      element: room_kitchen_light
+      class_template: |
+        if (entity.state === 'on') {
+          const brightness = entity.attributes.brightness || 0;
+          if (brightness < 85) return 'is-on brightness-low';
+          if (brightness < 170) return 'is-on brightness-medium';
+          return 'is-on brightness-high';
+        }
+        return 'is-off';
 
-    # Example: Bedroom light
-    - entity: light.bedroom
+    # ============================================================
+    # BEDROOM
+    # ============================================================
+    - entity: light.smart_ceiling_light
       element: room-bedroom
-      state_action:
+      tap_action:
         action: call-service
-        service: homeassistant.toggle
+        service: light.toggle
         service_data:
-          entity_id: light.bedroom
+          entity_id: light.smart_ceiling_light
       class_template: |
         if (entity.state === 'on') return 'light-on';
-        return '';
+        return 'light-off';
+      # Dynamic light overlay
+    - entity: light.smart_ceiling_light
+      element: room_bedroom_light
+      class_template: |
+        if (entity.state === 'on') {
+          const brightness = entity.attributes.brightness || 0;
+          if (brightness < 85) return 'is-on brightness-low';
+          if (brightness < 170) return 'is-on brightness-medium';
+          return 'is-on brightness-high';
+        }
+        return 'is-off';
 
-    # Example: Living room light
-    - entity: light.living_room
-      element: room-living-room
-      state_action:
+    # ============================================================
+    # CORRIDOR / ENTRY
+    # ============================================================
+    - entity: light.hall_strip
+      element: room-corridor
+      tap_action:
         action: call-service
-        service: homeassistant.toggle
+        service: light.toggle
         service_data:
-          entity_id: light.living_room
+          entity_id: light.hall_strip
       class_template: |
         if (entity.state === 'on') return 'light-on';
-        return '';
+        return 'light-off';
+      # Dynamic light overlay
+    - entity: light.hall_strip
+      element: room_corridor_light
+      class_template: |
+        if (entity.state === 'on') {
+          const brightness = entity.attributes.brightness || 0;
+          if (brightness < 85) return 'is-on brightness-low';
+          if (brightness < 170) return 'is-on brightness-medium';
+          return 'is-on brightness-high';
+        }
+        return 'is-off';
+
+    # ============================================================
+    # BATHROOM
+    # Static room (no smart light entity yet)
+    # More info action for future extension
+    # ============================================================
+    - entity: switch.teapot_start
+      element: room-bathroom
+      more_info_action:
+        action: more-info
+
+    # ============================================================
+    # LIVING ROOM
+    # Note: light.audiosistema_outlet is NOT the main light
+    # Marked as static until a real living room light is added
+    # See TODO.md for investigation
+    # ============================================================
+    - entity: media_player.tv
+      element: room-living-room
+      more_info_action:
+        action: more-info
+      # Future: when real light entity is confirmed, uncomment:
+      # - entity: light.real_living_room_light
+      #   element: room_living_light
+      #   class_template: |
+      #     if (entity.state === 'on') return 'is-on';
+      #     return 'is-off';
+
+    # ============================================================
+    # ROBOROCK VACUUM
+    # ============================================================
+    - entity: vacuum.roborock_qrevo_curv_series
+      element: roborock-zone
+      more_info_action:
+        action: more-info
+      # Optional: hold_action to start cleaning (document in docs/)
+      # hold_action:
+      #   action: call-service
+      #   service: vacuum.start
+      #   service_data:
+      #     entity_id: vacuum.roborock_qrevo_curv_series
+
+    # ============================================================
+    # STATUS / INFO (future extensions)
+    # ============================================================
+    # - entity: sensor.roborock_qrevo_curv_series_status
+    #   element: robot-status
+    #   class_template: |
+    #     return 'status-' + entity.state;
