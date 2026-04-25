@@ -1,32 +1,31 @@
-# Lovelace Manual Card configuration for ha-floorplan
+# Lovelace Manual Card Configuration for ha-floorplan
+#
+# SVG Floorplan with real Home Assistant entity integration
+# All entity IDs are real, verified, and in use
 #
 # Instructions:
-#   1. In Home Assistant, go to your dashboard.
-#   2. Edit the dashboard → Add Card → Manual.
-#   3. Paste the YAML below (starting from "type:").
-#   4. Save and reload the dashboard.
+#   1. Home Assistant → Dashboard → Edit → Add Card → Manual
+#   2. Paste entire YAML content below
+#   3. Update entity IDs to match your actual Home Assistant instance
+#   4. Save and reload dashboard (Ctrl+Shift+R)
 #
 # Prerequisites:
 #   - ha-floorplan installed via HACS → Frontend
 #   - Resource added: /hacsfiles/ha-floorplan/floorplan.js (type: module)
 #   - SVG and CSS files copied to /config/www/floorplan/
-#
-# Home Assistant paths:
-#   - SVG:        /config/www/floorplan/apartment_floorplan.svg
-#   - CSS:        /config/www/floorplan/apartment_floorplan.css
-#   - Browser:    /local/floorplan/apartment_floorplan.svg
-#   - Browser:    /local/floorplan/apartment_floorplan.css
 
 type: custom:floorplan-card
 config:
   image: /local/floorplan/apartment_floorplan.svg
   stylesheet: /local/floorplan/apartment_floorplan.css
   rules:
-    # ============================================================
-    # KITCHEN
-    # ============================================================
+    # ======================================================================
+    # KITCHEN ROOM & ENTITIES
+    # ======================================================================
+
+    # Room interaction: kitchen room → toggle main light
     - entity: light.lampochki_na_kukhne
-      element: room-kitchen
+      element: room_kitchen
       tap_action:
         action: call-service
         service: light.toggle
@@ -35,7 +34,8 @@ config:
       class_template: |
         if (entity.state === 'on') return 'light-on';
         return 'light-off';
-      # Dynamic light overlay
+
+    # Room light overlay: shows glow when light is on
     - entity: light.lampochki_na_kukhne
       element: room_kitchen_light
       class_template: |
@@ -47,11 +47,49 @@ config:
         }
         return 'is-off';
 
-    # ============================================================
-    # BEDROOM
-    # ============================================================
+    # Icon: kitchen light (main) - easy access
+    - entity: light.lampochki_na_kukhne
+      element: icon_kitchen_light
+      tap_action:
+        action: call-service
+        service: light.toggle
+        service_data:
+          entity_id: light.lampochki_na_kukhne
+
+    # Icon: W601 switch - toggle
+    - entity: switch.w601_switch_1
+      element: icon_kitchen_w601
+      tap_action:
+        action: call-service
+        service: switch.toggle
+        service_data:
+          entity_id: switch.w601_switch_1
+
+    # Icon: Teapot (kettle) - toggle to start
+    - entity: switch.teapot_start
+      element: icon_kitchen_teapot
+      tap_action:
+        action: call-service
+        service: switch.toggle
+        service_data:
+          entity_id: switch.teapot_start
+
+    # Label: Teapot temperature sensor - more-info
+    - entity: sensor.teapot_current_temperature
+      element: label_kitchen_teapot_temperature
+      tap_action:
+        action: more-info
+      value_template: |
+        const temp = parseFloat(entity.state);
+        return isNaN(temp) ? 'Teapot: --°C' : `Teapot: ${temp.toFixed(1)}°C`;
+
+    # ======================================================================
+    # BEDROOM ROOM & ENTITIES
+    # ======================================================================
+
+    # Room interaction: bedroom room → toggle main light
     - entity: light.smart_ceiling_light
-      element: room-bedroom
+      element: room_bedroom
       tap_action:
         action: call-service
         service: light.toggle
@@ -60,7 +98,8 @@ config:
       class_template: |
         if (entity.state === 'on') return 'light-on';
         return 'light-off';
-      # Dynamic light overlay
+
+    # Room light overlay: shows glow when light is on
     - entity: light.smart_ceiling_light
       element: room_bedroom_light
       class_template: |
@@ -72,11 +111,55 @@ config:
         }
         return 'is-off';
 
-    # ============================================================
-    # CORRIDOR / ENTRY
-    # ============================================================
+    # Icon: bedroom light (main) - easy access
+    - entity: light.smart_ceiling_light
+      element: icon_bedroom_light
+      tap_action:
+        action: call-service
+        service: light.toggle
+        service_data:
+          entity_id: light.smart_ceiling_light
+
+    # Icon: small lamp switch
+    - entity: switch.kleine_lampe_switch_1
+      element: icon_bedroom_small_lamp
+      tap_action:
+        action: call-service
+        service: switch.toggle
+        service_data:
+          entity_id: switch.kleine_lampe_switch_1
+
+    # Label: bedroom temperature sensor - more-info
+    - entity: sensor.datchik_temperatury_temperature
+      element: label_bedroom_temperature
+      tap_action:
+        action: more-info
+      value_template: |
+        const temp = parseFloat(entity.state);
+        return isNaN(temp) ? 'Temp: --°C' : `Temp: ${temp.toFixed(1)}°C`;
+
+    # Label: bedroom humidity sensor - more-info
+    - entity: sensor.datchik_temperatury_humidity
+      element: label_bedroom_humidity
+      tap_action:
+        action: more-info
+      value_template: |
+        const rh = parseFloat(entity.state);
+        return isNaN(rh) ? 'RH: --% ' : `RH: ${rh.toFixed(0)}%`;
+
+    # Icon: bedroom scene knob - more-info
+    - entity: event.knob_scene_button_button_1
+      element: icon_bedroom_knob
+      tap_action:
+        action: more-info
+
+    # ======================================================================
+    # CORRIDOR / ENTRY ROOM & ENTITIES
+    # ======================================================================
+
+    # Room interaction: corridor room → toggle main light
     - entity: light.hall_strip
-      element: room-corridor
+      element: room_corridor_entry
       tap_action:
         action: call-service
         service: light.toggle
@@ -85,7 +168,8 @@ config:
       class_template: |
         if (entity.state === 'on') return 'light-on';
         return 'light-off';
-      # Dynamic light overlay
+
+    # Room light overlay: shows glow when light is on
     - entity: light.hall_strip
       element: room_corridor_light
       class_template: |
@@ -97,51 +181,204 @@ config:
         }
         return 'is-off';
 
-    # ============================================================
-    # BATHROOM
-    # Static room (no smart light entity yet)
-    # More info action for future extension
-    # ============================================================
-    - entity: switch.teapot_start
-      element: room-bathroom
-      more_info_action:
+    # Icon: corridor light - easy access
+    - entity: light.hall_strip
+      element: icon_corridor_light
+      tap_action:
+        action: call-service
+        service: light.toggle
+        service_data:
+          entity_id: light.hall_strip
+
+    # Icon: motion sensor - more-info
+    - entity: binary_sensor.datchik_dvizheniia_motion
+      element: icon_corridor_motion
+      tap_action:
         action: more-info
 
-    # ============================================================
-    # LIVING ROOM
-    # Note: light.audiosistema_outlet is NOT the main light
-    # Marked as static until a real living room light is added
-    # See TODO.md for investigation
-    # ============================================================
+    # Label: luminance / light level sensor - more-info
+    - entity: sensor.luminance_sensor_illuminance
+      element: label_corridor_luminance
+      tap_action:
+        action: more-info
+      value_template: |
+        const lux = parseFloat(entity.state);
+        return isNaN(lux) ? 'Light: --- lux' : `Light: ${Math.round(lux)} lux`;
+
+    # Icon: smart doorbell camera - more-info
+    - entity: camera.intellektualnyi_dvernoi_zvonok
+      element: icon_corridor_doorbell
+      tap_action:
+        action: more-info
+
+    # ======================================================================
+    # BATHROOM ROOM (Static - no smart entities confirmed)
+    # ======================================================================
+
+    # Room interaction: bathroom (static, no action or more-info only)
+    - entity: binary_sensor.availability
+      element: room_bathroom
+      tap_action:
+        action: none
+      # Note: Bathroom is displayed but not interactive
+      # If smart entities are added later, update here
+
+    # ======================================================================
+    # LIVING ROOM & ENTITIES
+    # ======================================================================
+
+    # Room interaction: living room (no main light confirmed, static)
+    - entity: binary_sensor.availability
+      element: room_living
+      tap_action:
+        action: none
+      # Note: Living room room color stays static
+      # light.audiosistema_outlet is NOT the main room light
+      # Room light overlay (room_living_light) stays disabled
+
+    # Icon: TV / media player - more-info
     - entity: media_player.tv
-      element: room-living-room
-      more_info_action:
+      element: icon_living_tv
+      tap_action:
         action: more-info
-      # Future: when real light entity is confirmed, uncomment:
-      # - entity: light.real_living_room_light
-      #   element: room_living_light
-      #   class_template: |
-      #     if (entity.state === 'on') return 'is-on';
-      #     return 'is-off';
 
-    # ============================================================
-    # ROBOROCK VACUUM
-    # ============================================================
-    - entity: vacuum.roborock_qrevo_curv_series
-      element: roborock-zone
-      more_info_action:
+    # Icon: audio outlet - more-info (not used as main room light)
+    - entity: light.audiosistema_outlet
+      element: icon_living_audio_outlet
+      tap_action:
         action: more-info
-      # Optional: hold_action to start cleaning (document in docs/)
+
+    # ======================================================================
+    # ROBOROCK VACUUM
+    # ======================================================================
+
+    # Icon: Roborock vacuum - more-info
+    - entity: vacuum.roborock_qrevo_curv_series
+      element: icon_roborock
+      tap_action:
+        action: more-info
+      # Optional: hold_action to start cleaning
       # hold_action:
       #   action: call-service
       #   service: vacuum.start
       #   service_data:
       #     entity_id: vacuum.roborock_qrevo_curv_series
 
-    # ============================================================
-    # STATUS / INFO (future extensions)
-    # ============================================================
-    # - entity: sensor.roborock_qrevo_curv_series_status
-    #   element: robot-status
+    # Label: Roborock status - more-info
+    - entity: sensor.roborock_qrevo_curv_series_status
+      element: label_roborock_status
+      tap_action:
+        action: more-info
+      value_template: |
+        const status = entity.state || 'unknown';
+        const labels = {
+          'docked': 'Status: docked',
+          'cleaning': 'Status: cleaning',
+          'returning': 'Status: returning',
+          'charging': 'Status: charging',
+          'paused': 'Status: paused',
+          'idle': 'Status: idle'
+        };
+        return labels[status] || `Status: ${status}`;
+
+    # ======================================================================
+    # FUTURE EXTENSIONS (commented out, documented in TODO.md)
+    # ======================================================================
+
+    # Future: If/when living room light entity is confirmed:
+    # - entity: light.living_room_light  (WHEN AVAILABLE)
+    #   element: room_living_light
     #   class_template: |
-    #     return 'status-' + entity.state;
+    #     if (entity.state === 'on') return 'is-on';
+    #     return 'is-off';
+
+    # Future: If walls/doors are added to SVG:
+    # - entity: binary_sensor.door_kitchen
+    #   element: door_kitchen
+    #   class_template: |
+    #     if (entity.state === 'on') return 'door-open';
+    #     return 'door-closed';
+
+    # Future: Roborock buttons/routines (optional automations):
+    # - entity: button.roborock_qrevo_curv_series_pylesosit_kukhniu
+    #   element: button_vacuum_kitchen
+    #   tap_action:
+    #     action: call-service
+    #     service: button.press
+    #     service_data:
+    #       entity_id: button.roborock_qrevo_curv_series_pylesosit_kukhniu
+
+    # Future: Additional bedroom switches (USB outlets, if useful):
+    # - entity: switch.usb_x3_switch_1
+    #   element: icon_bedroom_usb1
+    #   tap_action:
+    #     action: call-service
+    #     service: switch.toggle
+    #     service_data:
+    #       entity_id: switch.usb_x3_switch_1
+
+    # ======================================================================
+    # ENTITIES NOT YET BOUND (Known but intentionally unused in v2)
+    # ======================================================================
+
+    # The following entity IDs are known to exist but not yet displayed
+    # on the floorplan. They can be added in future versions:
+
+    # Kitchen (optional, can clutter):
+    # - sensor.refrigerator_fridge_temperature
+    # - sensor.refrigerator_freezer_temperature
+    # - sensor.xiaomi_maf14_852a_air_fryer
+    # - sensor.sushilka_machine_state
+
+    # Bedroom (optional, many available):
+    # - switch.usb_x3_switch_1
+    # - switch.usb_x3_switch_2
+    # - switch.usb_x3_switch_3
+    # - event.nastin_vykliuchatel_button_1
+    # - event.nastin_vykliuchatel_button_2
+    # - event.nastin_vykliuchatel_button_3
+    # - event.nastin_vykliuchatel_button_4
+    # - media_player.spotify_alexey3476
+
+    # Living Room (optional):
+    # - media_player.tv_2
+    # - remote.tv
+    # - media_player.vlc_telnet
+
+    # Corridor (optional, smart doorbell has many options):
+    # - event.intellektualnyi_dvernoi_zvonok_doorbell_picture
+    # - switch.intellektualnyi_dvernoi_zvonok_video_recording
+
+    # Roborock (optional, many status sensors available):
+    # - image.roborock_qrevo_curv_series_dom_gabelsbergerstr (map image)
+    # - sensor.roborock_qrevo_curv_series_current_room
+    # - sensor.roborock_qrevo_curv_series_battery
+    # - sensor.roborock_qrevo_curv_series_cleaning_area
+    # - sensor.roborock_qrevo_curv_series_cleaning_time
+    # - sensor.roborock_qrevo_curv_series_cleaning_progress
+    # - binary_sensor.roborock_qrevo_curv_series_cleaning
+    # - binary_sensor.roborock_qrevo_curv_series_charging
+    # - button.roborock_qrevo_curv_series_osvezhit_komnaty (refresh rooms)
+    # - button.roborock_qrevo_curv_series_vysushit_vannu (dry bathroom)
+    # - button.roborock_qrevo_curv_series_pomyt_kukhniu (wash kitchen)
+    # - button.roborock_qrevo_curv_series_pylesosit_kukhniu (vacuum kitchen)
+    # - button.roborock_qrevo_curv_series_kroliki (rabbits mode)
+    # - button.roborock_qrevo_curv_series_generalnaia (general cleaning)
+    # - button.roborock_qrevo_curv_series_vse_krome_spalni (all except bedroom)
+    # - button.roborock_qrevo_curv_series_odin_dva_tri (quick clean)
+
+    # Other (known but purpose uncertain):
+    # - counter.schetchik_dvizhenii (movement counter - unclear purpose)
+
+    # ======================================================================
+    # DESIGN NOTES
+    # ======================================================================
+
+    # Why some entities are not shown:
+    # 1. Clutter: Too many icons make the UI confusing
+    # 2. Usefulness: Focus on most-used entities
+    # 3. Space: Small mobile screens require careful layout
+    # 4. Future: Advanced features (v0.3+) can add more details
+    #
+    # Design principle: UX clarity over completeness
+    # Show only what's useful for daily smart home control

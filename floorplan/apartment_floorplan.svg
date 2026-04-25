@@ -1,78 +1,473 @@
 <svg
+  id="floorplan_gabelsbergerstr"
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 600 1200"
-  width="600"
-  height="1200"
-  id="floorplan"
+  viewBox="0 0 720 1100"
+  width="720"
+  height="1100"
   role="img"
-  aria-label="Apartment floorplan with smart home devices"
+  aria-label="Smart home floorplan: kitchen, bedroom, bathroom, living room, corridor"
 >
-  <!-- Stylesheet reference -->
+  <!-- ============================================================
+       DEFINITIONS: Filters, gradients, reusable symbols
+       ============================================================ -->
   <defs>
     <style>
-      /* Inline styles are intentionally minimal. See apartment_floorplan.css */
-      /* Dynamic classes and animations are managed by CSS file */
+      /* Inline minimal - see apartment_floorplan.css for all styling */
     </style>
+
+    <!-- Soft shadow filter for rooms -->
+    <filter id="room_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" result="offsetblur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Glow filter for light overlays -->
+    <filter id="glow_filter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- Dark background for smart home aesthetic -->
-  <rect id="background" x="0" y="0" width="600" height="1200" fill="#0f1419" />
-
-  <!-- Entry / Corridor Zone (center vertical, bottom) -->
-  <g id="room-corridor">
-    <!-- Main corridor floor -->
-    <rect id="corridor-floor" x="150" y="950" width="300" height="200" rx="16" ry="16" />
-    <!-- Entrance marker -->
-    <circle id="entrance-marker" cx="300" cy="1050" r="30" fill="none" stroke-width="2" />
-    <text id="corridor-label" x="300" y="980" text-anchor="middle" font-size="14" font-weight="500">Entry</text>
+  <!-- ============================================================
+       BACKGROUND LAYER
+       ============================================================ -->
+  <g id="background_layer">
+    <rect
+      id="bg_main"
+      x="0"
+      y="0"
+      width="720"
+      height="1100"
+      fill="#0f1419"
+      class="bg-main"
+    />
   </g>
 
-  <!-- Kitchen (top-left) -->
-  <g id="room-kitchen">
-    <rect id="kitchen-floor" x="30" y="30" width="240" height="280" rx="16" ry="16" />
-    <!-- Light overlay for dynamic glow (hidden by default, shown when light is on) -->
-    <rect id="room_kitchen_light" x="30" y="30" width="240" height="280" rx="16" ry="16" opacity="0" class="room-light-overlay" />
-    <text id="kitchen-label" x="150" y="180" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="600">Kitchen</text>
+  <!-- ============================================================
+       APARTMENT SHELL LAYER (TODO: Add walls if needed)
+       ============================================================ -->
+  <g id="apartment_shell_layer">
+    <!-- Outer boundary (for future blueprints) -->
   </g>
 
-  <!-- Bathroom (bottom-left) -->
-  <g id="room-bathroom">
-    <rect id="bathroom-floor" x="30" y="360" width="240" height="300" rx="16" ry="16" />
-    <!-- Static room, no dynamic lighting -->
-    <text id="bathroom-label" x="150" y="510" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="600">Bathroom</text>
+  <!-- ============================================================
+       ROOMS BASE LAYER
+       Static room shapes, always visible
+       ============================================================ -->
+  <g id="rooms_base_layer" class="rooms">
+
+    <!-- KITCHEN (top-left) -->
+    <path
+      id="room_kitchen"
+      class="room room-kitchen"
+      d="M 20 20 L 340 20 L 340 300 L 20 300 Z"
+      rx="16" ry="16"
+      filter="url(#room_shadow)"
+    />
+
+    <!-- BATHROOM (bottom-left) -->
+    <path
+      id="room_bathroom"
+      class="room room-bathroom"
+      d="M 20 350 L 340 350 L 340 620 L 20 620 Z"
+      rx="16" ry="16"
+      filter="url(#room_shadow)"
+    />
+
+    <!-- CORRIDOR / ENTRY (center, vertical) -->
+    <path
+      id="room_corridor_entry"
+      class="room room-corridor"
+      d="M 380 650 L 600 650 L 600 1050 L 380 1050 Z"
+      rx="16" ry="16"
+      filter="url(#room_shadow)"
+    />
+
+    <!-- BEDROOM (top-right) -->
+    <path
+      id="room_bedroom"
+      class="room room-bedroom"
+      d="M 380 20 L 700 20 L 700 300 L 380 300 Z"
+      rx="16" ry="16"
+      filter="url(#room_shadow)"
+    />
+
+    <!-- LIVING ROOM (bottom-right) -->
+    <path
+      id="room_living"
+      class="room room-living"
+      d="M 380 350 L 700 350 L 700 620 L 380 620 Z"
+      rx="16" ry="16"
+      filter="url(#room_shadow)"
+    />
+
   </g>
 
-  <!-- Bedroom (top-right) -->
-  <g id="room-bedroom">
-    <rect id="bedroom-floor" x="330" y="30" width="240" height="280" rx="16" ry="16" />
-    <!-- Light overlay for dynamic glow -->
-    <rect id="room_bedroom_light" x="330" y="30" width="240" height="280" rx="16" ry="16" opacity="0" class="room-light-overlay" />
-    <text id="bedroom-label" x="450" y="180" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="600">Bedroom</text>
+  <!-- ============================================================
+       ROOMS LIGHT OVERLAY LAYER
+       Dynamic light overlays (separate from base rooms)
+       ============================================================ -->
+  <g id="rooms_light_overlay_layer" class="light-overlays">
+
+    <!-- KITCHEN light overlay -->
+    <path
+      id="room_kitchen_light"
+      class="room-light-overlay room-kitchen-light"
+      d="M 20 20 L 340 20 L 340 300 L 20 300 Z"
+      rx="16" ry="16"
+      fill="#ffd700"
+      opacity="0"
+      filter="url(#glow_filter)"
+    />
+
+    <!-- BEDROOM light overlay -->
+    <path
+      id="room_bedroom_light"
+      class="room-light-overlay room-bedroom-light"
+      d="M 380 20 L 700 20 L 700 300 L 380 300 Z"
+      rx="16" ry="16"
+      fill="#ffd700"
+      opacity="0"
+      filter="url(#glow_filter)"
+    />
+
+    <!-- CORRIDOR light overlay -->
+    <path
+      id="room_corridor_light"
+      class="room-light-overlay room-corridor-light"
+      d="M 380 650 L 600 650 L 600 1050 L 380 1050 Z"
+      rx="16" ry="16"
+      fill="#ffd700"
+      opacity="0"
+      filter="url(#glow_filter)"
+    />
+
+    <!-- LIVING ROOM light overlay (static, no confirmed light entity) -->
+    <path
+      id="room_living_light"
+      class="room-light-overlay room-living-light"
+      d="M 380 350 L 700 350 L 700 620 L 380 620 Z"
+      rx="16" ry="16"
+      fill="#ffd700"
+      opacity="0"
+      filter="url(#glow_filter)"
+    />
+
   </g>
 
-  <!-- Living Room (bottom-right) -->
-  <g id="room-living-room">
-    <rect id="living-room-floor" x="330" y="360" width="240" height="300" rx="16" ry="16" />
-    <!-- Light overlay for dynamic glow (conditional, pending real light entity) -->
-    <rect id="room_living_light" x="330" y="360" width="240" height="300" rx="16" ry="16" opacity="0" class="room-light-overlay" />
-    <text id="living-room-label" x="450" y="510" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="600">Living Room</text>
+  <!-- ============================================================
+       WALLS LAYER (TODO: Add internal walls if needed)
+       ============================================================ -->
+  <g id="walls_layer" class="structural">
   </g>
 
-  <!-- Corridor light overlay (center zone) -->
-  <g id="corridor-lights">
-    <rect id="room_corridor_light" x="150" y="950" width="300" height="200" rx="16" ry="16" opacity="0" class="room-light-overlay" />
+  <!-- ============================================================
+       DOORS LAYER (TODO: Add door markers if needed)
+       ============================================================ -->
+  <g id="doors_layer" class="doors">
   </g>
 
-  <!-- Roborock status zone (placeholder for future live position) -->
-  <g id="roborock-zone">
-    <!-- Roborock position indicator (will be updated via Home Assistant) -->
-    <circle id="robot-position" cx="150" cy="1000" r="20" opacity="0" class="robot-indicator" />
-    <text id="robot-status" x="300" y="1100" text-anchor="middle" font-size="12" fill="#888888">Robot: docked</text>
+  <!-- ============================================================
+       WINDOWS LAYER (TODO: Add window markers if needed)
+       ============================================================ -->
+  <g id="windows_layer" class="windows">
   </g>
 
-  <!-- Legend / Info (optional, can be hidden) -->
-  <g id="legend" opacity="0.6">
-    <text x="20" y="1180" font-size="10" fill="#999999">Tap rooms to toggle lights • Tap icons for more info</text>
+  <!-- ============================================================
+       LABELS LAYER
+       Room labels only (readable, always visible)
+       ============================================================ -->
+  <g id="labels_layer" class="labels">
+
+    <!-- Kitchen label -->
+    <text
+      id="label_kitchen_name"
+      x="180"
+      y="160"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      class="label-room"
+    >
+      Kitchen
+    </text>
+
+    <!-- Bathroom label -->
+    <text
+      id="label_bathroom_name"
+      x="180"
+      y="485"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      class="label-room"
+    >
+      Bathroom
+    </text>
+
+    <!-- Corridor label -->
+    <text
+      id="label_corridor_name"
+      x="490"
+      y="850"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      class="label-room"
+    >
+      Entry / Corridor
+    </text>
+
+    <!-- Bedroom label -->
+    <text
+      id="label_bedroom_name"
+      x="540"
+      y="160"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      class="label-room"
+    >
+      Bedroom
+    </text>
+
+    <!-- Living Room label -->
+    <text
+      id="label_living_name"
+      x="540"
+      y="485"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      class="label-room"
+    >
+      Living Room
+    </text>
+
+  </g>
+
+  <!-- ============================================================
+       ENTITIES LAYER
+       Clickable entity icons (lights, switches, devices)
+       ============================================================ -->
+  <g id="entities_layer" class="entities">
+
+    <!-- =============== KITCHEN ENTITIES =============== -->
+
+    <!-- Kitchen light (main) -->
+    <circle
+      id="icon_kitchen_light"
+      class="entity entity-light"
+      cx="280"
+      cy="80"
+      r="20"
+    />
+    <text x="280" y="80" text-anchor="middle" dominant-baseline="middle" class="icon-label">💡</text>
+
+    <!-- Kitchen W601 switch -->
+    <circle
+      id="icon_kitchen_w601"
+      class="entity entity-switch"
+      cx="280"
+      cy="140"
+      r="20"
+    />
+    <text x="280" y="140" text-anchor="middle" dominant-baseline="middle" class="icon-label">🔲</text>
+
+    <!-- Kitchen teapot switch + temp label -->
+    <circle
+      id="icon_kitchen_teapot"
+      class="entity entity-switch"
+      cx="280"
+      cy="200"
+      r="20"
+    />
+    <text x="280" y="200" text-anchor="middle" dominant-baseline="middle" class="icon-label">🫖</text>
+
+    <text
+      id="label_kitchen_teapot_temperature"
+      class="entity entity-sensor"
+      x="280"
+      y="260"
+      text-anchor="middle"
+      font-size="12"
+    >
+      Teapot: --°C
+    </text>
+
+    <!-- =============== BEDROOM ENTITIES =============== -->
+
+    <!-- Bedroom light (main) -->
+    <circle
+      id="icon_bedroom_light"
+      class="entity entity-light"
+      cx="620"
+      cy="80"
+      r="20"
+    />
+    <text x="620" y="80" text-anchor="middle" dominant-baseline="middle" class="icon-label">💡</text>
+
+    <!-- Bedroom small lamp -->
+    <circle
+      id="icon_bedroom_small_lamp"
+      class="entity entity-switch"
+      cx="620"
+      cy="140"
+      r="20"
+    />
+    <text x="620" y="140" text-anchor="middle" dominant-baseline="middle" class="icon-label">🔆</text>
+
+    <!-- Bedroom temperature + humidity -->
+    <text
+      id="label_bedroom_temperature"
+      class="entity entity-sensor"
+      x="620"
+      y="200"
+      text-anchor="middle"
+      font-size="12"
+    >
+      Temp: --°C
+    </text>
+
+    <text
+      id="label_bedroom_humidity"
+      class="entity entity-sensor"
+      x="620"
+      y="230"
+      text-anchor="middle"
+      font-size="12"
+    >
+      RH: --%
+    </text>
+
+    <!-- Bedroom scene knob -->
+    <circle
+      id="icon_bedroom_knob"
+      class="entity entity-button"
+      cx="620"
+      cy="280"
+      r="16"
+    />
+    <text x="620" y="280" text-anchor="middle" dominant-baseline="middle" class="icon-label" font-size="14">🎚️</text>
+
+    <!-- =============== CORRIDOR / ENTRY ENTITIES =============== -->
+
+    <!-- Corridor light -->
+    <circle
+      id="icon_corridor_light"
+      class="entity entity-light"
+      cx="450"
+      cy="700"
+      r="20"
+    />
+    <text x="450" y="700" text-anchor="middle" dominant-baseline="middle" class="icon-label">💡</text>
+
+    <!-- Motion sensor -->
+    <circle
+      id="icon_corridor_motion"
+      class="entity entity-binary-sensor"
+      cx="450"
+      cy="760"
+      r="20"
+    />
+    <text x="450" y="760" text-anchor="middle" dominant-baseline="middle" class="icon-label">🔍</text>
+
+    <!-- Luminance sensor -->
+    <text
+      id="label_corridor_luminance"
+      class="entity entity-sensor"
+      x="450"
+      y="820"
+      text-anchor="middle"
+      font-size="12"
+    >
+      Light: --- lux
+    </text>
+
+    <!-- Smart doorbell camera -->
+    <circle
+      id="icon_corridor_doorbell"
+      class="entity entity-camera"
+      cx="530"
+      cy="1000"
+      r="20"
+    />
+    <text x="530" y="1000" text-anchor="middle" dominant-baseline="middle" class="icon-label">📷</text>
+
+    <!-- =============== LIVING ROOM ENTITIES =============== -->
+
+    <!-- Living room TV / media -->
+    <circle
+      id="icon_living_tv"
+      class="entity entity-media"
+      cx="620"
+      cy="420"
+      r="20"
+    />
+    <text x="620" y="420" text-anchor="middle" dominant-baseline="middle" class="icon-label">📺</text>
+
+    <!-- Living room audio outlet (not confirmed as main light) -->
+    <circle
+      id="icon_living_audio_outlet"
+      class="entity entity-switch"
+      cx="620"
+      cy="510"
+      r="20"
+    />
+    <text x="620" y="510" text-anchor="middle" dominant-baseline="middle" class="icon-label">🔊</text>
+
+    <!-- =============== ROBOROCK VACUUM =============== -->
+
+    <!-- Roborock icon + status -->
+    <circle
+      id="icon_roborock"
+      class="entity entity-vacuum"
+      cx="490"
+      cy="550"
+      r="24"
+    />
+    <text x="490" y="550" text-anchor="middle" dominant-baseline="middle" class="icon-label" font-size="18">🤖</text>
+
+    <text
+      id="label_roborock_status"
+      class="entity entity-sensor"
+      x="490"
+      y="600"
+      text-anchor="middle"
+      font-size="12"
+    >
+      Status: docked
+    </text>
+
+  </g>
+
+  <!-- ============================================================
+       SENSORS LAYER (Future: sensor value labels)
+       ============================================================ -->
+  <g id="sensors_layer" class="sensors">
+    <!-- Sensor value displays can go here if needed -->
+  </g>
+
+  <!-- ============================================================
+       ROBOROCK LAYER
+       Vacuum status / position (separate layer for potential animation)
+       ============================================================ -->
+  <g id="roborock_layer" class="roborock">
+    <!-- Robot position indicator (will be updated by ha-floorplan) -->
+  </g>
+
+  <!-- ============================================================
+       LEGEND / INFO (Optional)
+       ============================================================ -->
+  <g id="info_layer" opacity="0.5">
+    <text x="20" y="1080" font-size="10" fill="#888888" class="label-info">
+      Tap rooms for lights • Tap icons for more info
+    </text>
   </g>
 
 </svg>

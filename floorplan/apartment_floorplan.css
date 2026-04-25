@@ -1,78 +1,102 @@
 /* =============================================================
    apartment_floorplan.css
-   Modern smart home aesthetic for Home Assistant floorplan
 
-   Design principles:
-   - Dark theme for dashboard comfort
-   - Soft shadows and rounded shapes
-   - Calm, human-friendly colors
-   - Not a CAD/technical schematic
+   Smart home floorplan styling for Home Assistant
+   Design: Modern dark theme with soft shadows and rounded shapes
 
-   Hosted at: /config/www/floorplan/apartment_floorplan.css
+   Repository: /config/www/floorplan/apartment_floorplan.css
    Browser URL: /local/floorplan/apartment_floorplan.css
+
+   Structure:
+   - Global SVG defaults
+   - Background styling
+   - Room base layer styling
+   - Light overlay animations
+   - Entity icon styling
+   - Labels and text
+   - Interactive states (hover, active)
+   - Responsive design
    ============================================================= */
 
-/* --- Global SVG defaults --- */
-#floorplan {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+/* ============================================================
+   GLOBAL SVG DEFAULTS
+   ============================================================ */
+
+#floorplan_gabelsbergerstr {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background-color: #0f1419;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* --- Background --- */
-#background {
+/* ============================================================
+   BACKGROUND LAYER
+   ============================================================ */
+
+#bg_main {
   fill: #0f1419;
   transition: fill 0.3s ease;
 }
 
-/* --- Room floors (base state: lights OFF) --- */
-#kitchen-floor,
-#bathroom-floor,
-#bedroom-floor,
-#living-room-floor,
-#corridor-floor {
-  fill: #1a1f27;
-  stroke: #2a3142;
-  stroke-width: 1.5;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-  transition: fill 0.3s ease, filter 0.3s ease;
-}
+/* ============================================================
+   APARTMENT SHELL LAYER (Structural walls - future)
+   ============================================================ */
 
-/* --- Room labels --- */
-#kitchen-label,
-#bathroom-label,
-#bedroom-label,
-#living-room-label,
-#corridor-label,
-#robot-status {
-  font-size: 14px;
-  font-weight: 600;
-  fill: #c0c7d4;
-  pointer-events: none;
-  text-anchor: middle;
-  transition: fill 0.3s ease;
-}
-
-/* --- Entry / Corridor specific --- */
-#corridor-floor {
-  fill: #1a1f27;
-}
-
-#entrance-marker {
-  stroke: #2a3142;
-  opacity: 0.5;
+#apartment_shell_layer {
+  opacity: 1;
 }
 
 /* ============================================================
-   DYNAMIC ROOM LIGHTING OVERLAYS
-
-   These layers sit on top of room floors and provide
-   visual feedback when lights are on.
-
-   Future support:
-   - RGB color blending
-   - Color temperature (warm/cool)
-   - Brightness-based opacity
+   ROOMS BASE LAYER
+   Static room floor shapes, always visible
    ============================================================ */
+
+.rooms {
+  /* Container for all base room shapes */
+}
+
+.room {
+  fill: #1a1f27;
+  stroke: #2a3142;
+  stroke-width: 1.5;
+  transition: fill 0.3s ease;
+  cursor: pointer;
+}
+
+.room:hover {
+  filter: brightness(1.1) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
+}
+
+/* Individual room styling */
+
+#room_kitchen {
+  /* Top-left: kitchen */
+}
+
+#room_bathroom {
+  /* Bottom-left: bathroom (static, no dynamic lighting) */
+}
+
+#room_corridor_entry {
+  /* Center: corridor / entry zone */
+}
+
+#room_bedroom {
+  /* Top-right: bedroom */
+}
+
+#room_living {
+  /* Bottom-right: living room */
+}
+
+/* ============================================================
+   ROOMS LIGHT OVERLAY LAYER
+   Dynamic glow when lights are on
+   ============================================================ */
+
+.light-overlays {
+  /* Container for all light overlay shapes */
+}
 
 .room-light-overlay {
   fill: #ffd700;
@@ -82,19 +106,18 @@
   mix-blend-mode: screen;
 }
 
-/* Light is ON - show overlay with warm glow */
-.light-on .room-light-overlay,
+/* Light states: apply to overlay elements */
+
 .room-light-overlay.is-on {
   opacity: 0.25;
 }
 
-/* Light is OFF - hide overlay */
-.light-off .room-light-overlay,
 .room-light-overlay.is-off {
   opacity: 0;
 }
 
-/* Brightness levels affect overlay opacity */
+/* Brightness levels (when light has brightness attribute) */
+
 .room-light-overlay.brightness-low {
   opacity: 0.1;
 }
@@ -107,80 +130,347 @@
   opacity: 0.3;
 }
 
-/* Future: Color temperature support */
-/* .room-light-overlay.color-warm { fill: #ffa060; } */
-/* .room-light-overlay.color-cool { fill: #a0d8ff; } */
-/* .room-light-overlay.color-rgb { filter: url(#colorMatrix); } */
+/* Future: Color temperature support (documented, not yet active) */
 
-/* ============================================================
-   ROBOROCK VACUUM INDICATOR
-
-   Visual feedback for robot position / status
-   ============================================================ */
-
-.robot-indicator {
-  fill: #4a9eff;
-  stroke: #2a7fff;
-  stroke-width: 2;
-  filter: drop-shadow(0 2px 8px rgba(42, 127, 255, 0.3));
-  animation: robot-pulse 2s ease-in-out infinite;
+/*
+.room-light-overlay.color-warm {
+  fill: #ffa060;
 }
 
-@keyframes robot-pulse {
+.room-light-overlay.color-cool {
+  fill: #a0d8ff;
+}
+*/
+
+/* ============================================================
+   WALLS LAYER
+   Internal walls (if added later)
+   ============================================================ */
+
+#walls_layer {
+  stroke: #2a3142;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* ============================================================
+   DOORS LAYER
+   Door markers (if added later)
+   ============================================================ */
+
+#doors_layer {
+  /* Door indicators */
+}
+
+/* ============================================================
+   WINDOWS LAYER
+   Window markers (if added later)
+   ============================================================ */
+
+#windows_layer {
+  /* Window indicators */
+}
+
+/* ============================================================
+   LABELS LAYER
+   Room names and static text
+   ============================================================ */
+
+.labels {
+  pointer-events: none;
+}
+
+.label-room {
+  font-size: 18px;
+  font-weight: 600;
+  fill: #c0c7d4;
+  transition: fill 0.3s ease;
+}
+
+.label-info {
+  font-size: 10px;
+  fill: #888888;
+}
+
+/* ============================================================
+   ENTITIES LAYER
+   Clickable icons for lights, switches, sensors, cameras
+   ============================================================ */
+
+.entities {
+  /* Container for all entity icons */
+}
+
+.entity {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Entity circle backgrounds */
+
+.entity circle {
+  fill: #2a3142;
+  stroke: #3a4a5a;
+  stroke-width: 1;
+  transition: all 0.2s ease;
+}
+
+.entity:hover circle {
+  fill: #3a4a5a;
+  stroke: #4a5a6a;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* Entity type-specific styling */
+
+.entity-light {
+  /* Light entity (bulb icon) */
+}
+
+.entity-light circle {
+  fill: #1a4d2e;
+  stroke: #2a7d4e;
+}
+
+.entity-light:hover circle {
+  fill: #2a7d4e;
+  stroke: #3aad6e;
+}
+
+.entity-switch {
+  /* Switch entity (toggle) */
+}
+
+.entity-switch circle {
+  fill: #2a3f4a;
+  stroke: #3a5f6a;
+}
+
+.entity-switch:hover circle {
+  fill: #3a5f6a;
+  stroke: #4a8f9a;
+}
+
+.entity-binary-sensor {
+  /* Motion, door, etc. */
+}
+
+.entity-binary-sensor circle {
+  fill: #3a2a4a;
+  stroke: #5a3a6a;
+}
+
+.entity-binary-sensor:hover circle {
+  fill: #5a3a6a;
+  stroke: #7a4a8a;
+}
+
+.entity-sensor {
+  /* Temperature, humidity, luminance, etc. */
+  fill: #888888;
+  font-size: 12px;
+  transition: fill 0.2s ease;
+}
+
+.entity-sensor:hover {
+  fill: #aaaaaa;
+  cursor: pointer;
+}
+
+.entity-camera {
+  /* Camera / doorbell */
+}
+
+.entity-camera circle {
+  fill: #3a474a;
+  stroke: #5a6f7a;
+}
+
+.entity-camera:hover circle {
+  fill: #5a6f7a;
+  stroke: #7a9faa;
+}
+
+.entity-media {
+  /* Media player (TV, speaker, etc.) */
+}
+
+.entity-media circle {
+  fill: #4a3a2a;
+  stroke: #7a5a3a;
+}
+
+.entity-media:hover circle {
+  fill: #7a5a3a;
+  stroke: #aa7a4a;
+}
+
+.entity-button {
+  /* Scene buttons, action buttons */
+}
+
+.entity-button circle {
+  fill: #3a4a2a;
+  stroke: #5a7a3a;
+}
+
+.entity-button:hover circle {
+  fill: #5a7a3a;
+  stroke: #7aaa4a;
+}
+
+.entity-vacuum {
+  /* Roborock / robot vacuum */
+}
+
+.entity-vacuum circle {
+  fill: #2a3d4a;
+  stroke: #3a6d8a;
+}
+
+.entity-vacuum:hover circle {
+  fill: #3a6d8a;
+  stroke: #4a9dba;
+  filter: drop-shadow(0 2px 8px rgba(58, 109, 138, 0.4));
+}
+
+/* Icon emoji styling */
+
+.icon-label {
+  font-size: 20px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+/* ============================================================
+   SENSORS LAYER
+   Sensor value displays (future use)
+   ============================================================ */
+
+#sensors_layer {
+  /* Sensor labels and values */
+}
+
+/* ============================================================
+   ROBOROCK LAYER
+   Vacuum-specific styling
+   ============================================================ -->
+
+#roborock_layer {
+  /* Vacuum position, trajectory, animation */
+}
+
+/* Roborock status animation (pulsing) */
+
+@keyframes roborock_pulse {
   0%, 100% {
-    r: 20;
-    opacity: 0.6;
+    opacity: 0.7;
   }
   50% {
-    r: 24;
-    opacity: 0.4;
+    opacity: 1;
   }
+}
+
+.roborock.active {
+  animation: roborock_pulse 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   STRUCTURAL STYLING
+   Walls, doors, windows
+   ============================================================ */
+
+.structural {
+  fill: none;
+  stroke: #2a3142;
+  stroke-width: 2;
+}
+
+.doors {
+  stroke: #3a4a5a;
+  stroke-width: 1.5;
+  stroke-dasharray: 3, 3;
+}
+
+.windows {
+  stroke: #4a5f7a;
+  stroke-width: 1;
 }
 
 /* ============================================================
    INTERACTIVE STATES
-
-   Hover, active, and disabled states for user interaction
    ============================================================ */
 
-/* Rooms are clickable */
-#room-kitchen,
-#room-bathroom,
-#room-bedroom,
-#room-living-room,
-#room-corridor {
-  cursor: pointer;
-  transition: filter 0.2s ease;
+/* Focus / hover on rooms */
+
+.room.focused {
+  /* Applied via ha-floorplan when room is in focus */
+  filter: brightness(1.15);
 }
 
-/* Hover state - slight brightness increase */
-#room-kitchen:hover #kitchen-floor,
-#room-bathroom:hover #bathroom-floor,
-#room-bedroom:hover #bedroom-floor,
-#room-living-room:hover #living-room-floor,
-#room-corridor:hover #corridor-floor {
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6)) brightness(1.1);
+/* Active / selected state */
+
+.entity.active circle {
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+/* Loading / disabled state */
+
+.entity.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.entity.disabled circle {
+  fill: #1a2025;
+  stroke: #2a3035;
 }
 
 /* ============================================================
-   RESPONSIVE & FULLSCREEN CONSIDERATIONS
+   RESPONSIVE DESIGN
    ============================================================ */
 
-@media (min-width: 1200px) {
-  /* On larger screens, rooms can be slightly larger */
-  #kitchen-label,
-  #bathroom-label,
-  #bedroom-label,
-  #living-room-label,
-  #corridor-label {
+/* Small screens (phones, < 480px) */
+@media (max-width: 480px) {
+  .label-room {
+    font-size: 14px;
+  }
+
+  .icon-label {
     font-size: 16px;
+  }
+
+  .entity-sensor {
+    font-size: 10px;
   }
 }
 
-/* Mobile: keep text readable */
-@media (max-width: 600px) {
-  #floorplan {
-    /* SVG will scale responsively */
+/* Medium screens (tablets, 480-768px) */
+@media (min-width: 480px) and (max-width: 768px) {
+  .label-room {
+    font-size: 16px;
+  }
+
+  .icon-label {
+    font-size: 18px;
+  }
+}
+
+/* Large screens (desktop, 768px+) */
+@media (min-width: 768px) {
+  .label-room {
+    font-size: 20px;
+  }
+
+  .icon-label {
+    font-size: 22px;
+  }
+
+  .entity-sensor {
+    font-size: 13px;
   }
 }
 
@@ -188,13 +478,59 @@
    ACCESSIBILITY
    ============================================================ */
 
-text {
-  user-select: none;
-  -webkit-user-select: none;
+/* High contrast mode (if user preference detected) */
+@media (prefers-contrast: more) {
+  .entity circle {
+    stroke-width: 2;
+  }
+
+  .label-room {
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  }
 }
 
-/* Ensure good contrast for dark theme */
-#legend {
-  fill: #888888;
-  font-size: 10px;
+/* Reduced motion mode */
+@media (prefers-reduced-motion: reduce) {
+  .room-light-overlay {
+    transition: opacity 0.1s ease;
+  }
+
+  .entity {
+    transition: all 0.1s ease;
+  }
+
+  @keyframes roborock_pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 0.85; }
+  }
 }
+
+/* ============================================================
+   PRINT STYLES (if dashboard is printed)
+   ============================================================ */
+
+@media print {
+  #bg_main {
+    fill: #ffffff;
+  }
+
+  .room {
+    fill: #f0f0f0;
+    stroke: #333333;
+  }
+
+  .entity circle {
+    fill: #cccccc;
+    stroke: #333333;
+  }
+
+  .label-room,
+  .label-info {
+    fill: #000000;
+  }
+}
+
+/* ============================================================
+   END OF STYLESHEET
+   ============================================================ */
